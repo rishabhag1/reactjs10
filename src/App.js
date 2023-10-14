@@ -1,30 +1,60 @@
-import { useState } from "react";
-import "./App.css";
+import React, { useState, useEffect } from 'react';
+import "./App.css"
 
-function App() {
-  const [dob, setDob] = useState(null)
-  const [age, setAge] = useState(0);
+const App = () => {
+  const [users, setUsers] = useState([]);
 
-  const handleClick = () => {
-    var curr_year = parseInt(new Date().getUTCFullYear())
-    var curr_month = parseInt(new Date().getMonth());
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://dummyjson.com/users');
+        const data = await response.json();
+        setUsers(data.users);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
 
-    var year =  parseInt(String(dob).split('-')[0]);
-    var month = parseInt(String(dob).split('-')[1]);
-    
-    var diff = (curr_month - month) + ((curr_year - year) * 12)
-  
-    // var tage =  Math.abs(age_dt.getUTCFullYear() - 1970);
-    setAge(Math.floor(diff / 12));
-  };
+    fetchData();
+  }, []);
 
   return (
-    <div className="App">
-      <h1>Age Calculator</h1>
-      <h4>Enter your date of birth</h4>
-      <input onChange={(e) => setDob(e.target.value)} type="date" name="dob" id="dob" />
-      <button onClick={handleClick}>Calculate Age</button>
-      <h3>You are {age} years old</h3>
+    <div>
+      <h1 align="center">Dummy data</h1>
+      <table>
+      <thead>
+        <tr>
+          <th>Sno.</th>
+          <th>Profile Pic</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Gender</th>
+          <th>Email</th>
+          <th>Username</th>
+          <th>Domain</th>
+          <th>IP</th>
+          <th>University</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {users.map((user, index) => (
+          <tr key={user.id}>
+            <td>{index + 1}</td>
+            <td><img src={user.image} alt={`Profile of ${user.firstName} ${user.lastName}`} style={{ width: '50px' }} /></td>
+            <td>{user.firstName}</td>
+            <td>{user.lastName}</td>
+            <td>{user.gender}</td>
+            <td>{user.email}</td>
+            <td>{user.username}</td>
+            <td>{user.domain}</td>
+            <td>{user.ip}</td>
+            <td>{user.university}</td>
+          </tr>
+        ))}
+      </tbody>
+
+      </table>
     </div>
   );
 }
